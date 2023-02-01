@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api:
+    image: tmrw-api
+    container_name: tmrw-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: development
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+    command: npm run start:dev
+    ports:
+      - '3000:3000'
+    depends_on:
+      - database
+
+  database:
+    image: postgres:15.1
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: tmrw
+      POSTGRES_PASSWORD: tmrw
+      POSTGRES_DB: tmrw
+    ports:
+      - '5432:5432'
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - '8080:8080'
