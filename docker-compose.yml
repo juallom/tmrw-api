@@ -11,10 +11,10 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/usr/src/app
+      - ./src:/home/node/app/src
     command: npm run start:dev
     ports:
-      - '3000:3000'
+      - '3333:3333'
     depends_on:
       - database
 
