@@ -2,9 +2,9 @@ import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SignUpDto } from './dto/sign-up.dto';
 import { User } from './user.entity';
 import { UserRole } from './types';
+import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class UserService {
@@ -20,9 +20,13 @@ export class UserService {
     user.email = createUserDto.email;
     const salt = await bcrypt.genSalt(12);
     user.hash = await bcrypt.hash(createUserDto.password, salt);
-    user.role = UserRole.DEFAULT;
-
+    user.role = (await this.doesRootExist()) ? UserRole.DEFAULT : UserRole.ROOT;
     return this.userRepository.save(user);
+  }
+
+  async doesRootExist(): Promise<boolean> {
+    const root = await this.userRepository.findOneBy({ role: UserRole.ROOT });
+    return root !== null;
   }
 
   findOneByEmail(email: string): Promise<User> {
