@@ -20,7 +20,6 @@ export class TaskController {
   @UseGuards(AuthenticatedGuard)
   @Post('/')
   async addTask(@Req() req, @Body() task: CreateTaskDto) {
-    console.log(req.user);
     const data = {
       name: task.name,
       createdBy: req.user.id,

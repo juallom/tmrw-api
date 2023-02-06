@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { User } from './user.entity';
 import { UserRole } from './types';
 import { SignUpDto } from './dto/sign-up.dto';
@@ -29,7 +29,22 @@ export class UserService {
     return root !== null;
   }
 
+  findAll(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
   findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
+  }
+
+  findOneById(id: string): Promise<User> {
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async updateUserPriority(
+    id: string,
+    priority: number,
+  ): Promise<UpdateResult> {
+    return this.userRepository.update({ id }, { priority });
   }
 }

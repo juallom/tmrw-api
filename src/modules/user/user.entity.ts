@@ -21,6 +21,6 @@ export class User {
   @Column({ enum: UserRole, default: UserRole.DEFAULT })
   role: UserRole;
 
-  @Column({ type: 'int', default: 1 })
+  @Column({ type: 'int', default: 50 })
   priority: number;
 }
