@@ -25,7 +25,7 @@ export class TaskController {
       createdBy: req.user.id,
       createdByDisplay: `${req.user.firstName} ${req.user.lastName}`,
       createdDate: new Date().getTime(),
-      // a random duration between 10000 and 30000 milliseconds
+      // a random duration between 10000 and 30000 ms
       duration: Math.floor(Math.random() * (30000 - 10000 + 1) + 10000),
     };
     return this.taskQueue.add('execute', data, { priority: req.user.priority });

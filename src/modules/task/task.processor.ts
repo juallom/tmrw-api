@@ -5,6 +5,7 @@ import {
   OnQueueCompleted,
   OnQueueWaiting,
   OnQueueRemoved,
+  OnQueueProgress,
 } from '@nestjs/bull';
 import { Job } from 'bull';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -24,8 +25,16 @@ export class TaskProcessor {
     concurrency: 1,
   })
   async process(job: Job) {
+    const time = 500;
     const duration = job.data.duration;
-    await sleep(duration);
+    const steps = Math.floor(duration / time);
+    const rest = duration % time;
+    for (let i = 0; i < steps; i++) {
+      await sleep(time);
+      const progress = Math.floor(((i + 1) * time * 100) / duration);
+      await job.progress(progress);
+    }
+    await sleep(rest);
   }
 
   @OnQueueActive()
@@ -45,6 +54,11 @@ export class TaskProcessor {
 
   @OnQueueRemoved()
   onRemoved() {
+    this.eventEmitter.emit('tasksUpdate');
+  }
+
+  @OnQueueProgress()
+  onProgress() {
     this.eventEmitter.emit('tasksUpdate');
   }
 }
