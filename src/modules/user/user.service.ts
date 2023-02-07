@@ -17,16 +17,17 @@ export class UserService {
     const user = new User();
     user.firstName = createUserDto.firstName;
     user.lastName = createUserDto.lastName;
-    user.email = createUserDto.email;
+    user.email = createUserDto.email.toLowerCase();
     const salt = await bcrypt.genSalt(12);
     user.hash = await bcrypt.hash(createUserDto.password, salt);
     user.role = (await this.doesRootExist()) ? UserRole.DEFAULT : UserRole.ROOT;
     return this.userRepository.save(user);
   }
 
-  async doesRootExist(): Promise<boolean> {
-    const root = await this.userRepository.findOneBy({ role: UserRole.ROOT });
-    return root !== null;
+  doesRootExist(): Promise<boolean> {
+    return this.userRepository.exist({
+      where: { role: UserRole.ROOT },
+    });
   }
 
   findAll(): Promise<User[]> {

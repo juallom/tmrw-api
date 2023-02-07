@@ -20,18 +20,50 @@ export class TaskGateway implements OnGatewayConnection {
   server: Server;
 
   async handleConnection(client) {
-    await this.emitProgress(client);
+    await this.emitCompleted(client);
+    await this.emitActive(client);
+    await this.emitWaiting(client);
   }
 
-  @OnEvent('tasksUpdate', { async: true })
-  async onTasksUpdate() {
-    await this.emitProgress(this.server);
+  @OnEvent('OnQueueCompleted', { async: true })
+  async onQueueCompleted() {
+    await this.emitCompleted(this.server);
+    await this.emitActive(this.server);
   }
 
-  async emitProgress(client) {
+  @OnEvent('OnQueueRemoved', { async: true })
+  async onQueueRemoved() {
+    await this.emitCompleted(this.server);
+  }
+
+  @OnEvent('OnQueueActive', { async: true })
+  async onQueueActive() {
+    await this.emitActive(this.server);
+    await this.emitWaiting(this.server);
+  }
+
+  @OnEvent('OnQueueProgress', { async: true })
+  async onQueueProgress() {
+    await this.emitActive(this.server);
+  }
+
+  @OnEvent('OnQueueWaiting', { async: true })
+  async onQueueWaiting() {
+    await this.emitWaiting(this.server);
+  }
+
+  async emitCompleted(client) {
     const completed = await this.taskQueue.getCompleted();
+    client.emit('completedTasks', { completed });
+  }
+
+  async emitActive(client) {
     const active = await this.taskQueue.getActive();
+    client.emit('activeTasks', { active });
+  }
+
+  async emitWaiting(client) {
     const waiting = await this.taskQueue.getWaiting();
-    client.emit('tasks', { completed, active, waiting });
+    client.emit('waitingTasks', { waiting });
   }
 }

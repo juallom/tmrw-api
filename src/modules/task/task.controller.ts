@@ -11,7 +11,7 @@ import {
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { AuthenticatedGuard } from '../auth/authenticated.guard';
+import { AuthenticatedGuard } from '../auth/guards/authenticated.guard';
 
 @Controller('tasks')
 export class TaskController {

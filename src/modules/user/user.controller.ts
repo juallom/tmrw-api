@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
-import { AuthenticatedGuard } from '../auth/authenticated.guard';
+import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
+import { AuthenticatedGuard } from '../auth/guards/authenticated.guard';
 import { UserRole } from './types';
 import { User } from './user.entity';
 import { UpdateResult } from 'typeorm';

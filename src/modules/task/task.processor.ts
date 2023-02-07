@@ -37,28 +37,28 @@ export class TaskProcessor {
     await sleep(rest);
   }
 
-  @OnQueueActive()
-  onActive() {
-    this.eventEmitter.emit('tasksUpdate');
-  }
-
   @OnQueueCompleted()
   onCompleted() {
-    this.eventEmitter.emit('tasksUpdate');
-  }
-
-  @OnQueueWaiting()
-  onWaiting() {
-    this.eventEmitter.emit('tasksUpdate');
+    this.eventEmitter.emit('OnQueueCompleted');
   }
 
   @OnQueueRemoved()
   onRemoved() {
-    this.eventEmitter.emit('tasksUpdate');
+    this.eventEmitter.emit('OnQueueRemoved');
+  }
+
+  @OnQueueActive()
+  onActive() {
+    this.eventEmitter.emit('OnQueueActive');
   }
 
   @OnQueueProgress()
   onProgress() {
-    this.eventEmitter.emit('tasksUpdate');
+    this.eventEmitter.emit('OnQueueProgress');
+  }
+
+  @OnQueueWaiting()
+  onWaiting() {
+    this.eventEmitter.emit('OnQueueWaiting');
   }
 }
